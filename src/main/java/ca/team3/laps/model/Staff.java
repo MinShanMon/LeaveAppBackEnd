@@ -13,13 +13,15 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import ca.team3.laps.model.LeaveTypes.LeaveType;
+import lombok.Data;
 
 import javax.persistence.JoinColumn;
 
-
+@Data
 @Entity
 public class Staff {
 
@@ -27,122 +29,10 @@ public class Staff {
     @Id
     @Column(name="staff_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long stfId;
+    private int stfId;
 
     @Column(name = "managerid")
     private String managerId;
-
-    public long getStfId() {
-        return stfId;
-    }
-
-    public void setStfId(long stfId) {
-        this.stfId = stfId;
-    }
-
-    public String getManagerId() {
-        return managerId;
-    }
-
-    public void setManagerId(String managerId) {
-        this.managerId = managerId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public int getAnuLeave() {
-        return anuLeave;
-    }
-
-    public void setAnuLeave(int anuLeave) {
-        this.anuLeave = anuLeave;
-    }
-
-    public int getMediLeave() {
-        return mediLeave;
-    }
-
-    public void setMediLeave(int mediLeave) {
-        this.mediLeave = mediLeave;
-    }
-
-    public int getCompLeave() {
-        return compLeave;
-    }
-
-    public void setCompLeave(int compLeave) {
-        this.compLeave = compLeave;
-    }
-
-    public List<LeaveType> getLTSet() {
-        return LTSet;
-    }
-
-    public void setLTSet(List<LeaveType> lTSet) {
-        LTSet = lTSet;
-    }
 
     private String username;
 
@@ -171,6 +61,7 @@ public class Staff {
 	@Column(name="comp_requested_entitlement", nullable = false)
     private int compLeave;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "leave")
 	private List<Leave> staffLeave;
 
@@ -184,7 +75,7 @@ public class Staff {
 
     public Staff(){}
     
-    public Staff(long stfId, String managerId, String username, String password, int roleId, String title,
+    public Staff(int stfId, String managerId, String username, String password, int roleId, String title,
             String firstname, String lastname, boolean status, String email, int anuLeave, int mediLeave,
             int compLeave) {
         this.stfId = stfId;

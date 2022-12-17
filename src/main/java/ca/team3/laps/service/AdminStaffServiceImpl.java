@@ -21,7 +21,7 @@ public class AdminStaffServiceImpl implements AdminStaffService {
     }
 
     @Override
-    public Staff findStaffById(long id) {
+    public Staff findStaffById(Integer id) {
         return staffRepo.findByStfId(id);
     }
 
