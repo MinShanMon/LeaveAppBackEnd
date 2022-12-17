@@ -47,7 +47,7 @@ public class Leave {
 
     private int period;
 
-    @Column(name = "status", columnDefinition = "ENUM('SUBMITTED', 'APPROVED', 'WITHDRAWN', 'UPDATED', 'REJECTED')")
+    @Column(name = "status", columnDefinition = "ENUM('SUBMITTED', 'APPROVED', 'WITHDRAWN', 'UPDATED', 'REJECTED', 'DELETED')")
     @Enumerated(EnumType.STRING)
     private LeaveStatusEnum status;
 

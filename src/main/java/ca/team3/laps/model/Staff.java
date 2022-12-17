@@ -31,8 +31,8 @@ public class Staff {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int stfId;
 
-    @Column(name = "managerid")
-    private String managerId;
+    @Column(name = "managerid", nullable = true)
+    private int managerId;
 
     private String username;
 
@@ -75,7 +75,7 @@ public class Staff {
 
     public Staff(){}
     
-    public Staff(int stfId, String managerId, String username, String password, int roleId, String title,
+    public Staff(int stfId, int managerId, String username, String password, int roleId, String title,
             String firstname, String lastname, boolean status, String email, int anuLeave, int mediLeave,
             int compLeave) {
         this.stfId = stfId;

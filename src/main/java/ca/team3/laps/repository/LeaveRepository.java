@@ -8,7 +8,7 @@ import ca.team3.laps.model.Leave;
 
 
 public interface LeaveRepository extends JpaRepository<Leave, Integer>{
-    @Query("SELECT l FROM Leave l JOIN l.staff f WHERE f.stfId= :staffid")
+    @Query("SELECT l FROM Leave l JOIN l.leave f WHERE f.stfId= :staffid")
     public List<Leave> findByStaffid(@Param("staffid") Integer staffid);
 
 }
