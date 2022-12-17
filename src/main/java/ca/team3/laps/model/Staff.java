@@ -59,7 +59,7 @@ public class Staff {
     private int mediLeave;
 
 	@Column(name="comp_requested_entitlement", nullable = false)
-    private int compLeave;
+    private double compLeave;
 
     @JsonIgnore
     @OneToMany(mappedBy = "leave")

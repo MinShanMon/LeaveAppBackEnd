@@ -46,7 +46,7 @@ public class LeaveServiceImpl implements LeaveService {
 
         LocalDate date1 = leaves.getStartDate();
 			LocalDate date2 = leaves.getEndDate();
-
+        
 			List<Holiday> dates = calendarRepo.findByYear(date1.getYear());
             if(date1.getYear() != date2.getYear()){
             List<Holiday> dates1 = calendarRepo.findByYear(date2.getYear());
@@ -62,32 +62,38 @@ public class LeaveServiceImpl implements LeaveService {
 				}
                 
 			}
-
-            
-            int peri1= (int)(leaves.getEndDate().toEpochDay()- leaves.getStartDate().toEpochDay());
-            int peri = peri1 - count;
             Staff staff = leave.getLeave();
-            if(leave.getType() == LeaveTypeEnum.ANNUAL_LEAVE){
-                if(peri>staff.getAnuLeave()){
-                   return null;
+            if(leaves.getType() == LeaveTypeEnum.COMPENSATION_LEAVE){
+                if(leaves.getPeriod()>staff.getCompLeave()){
+                    return null;
+                }            
+                int l = leaves.getPeriod()-count;
+                leave.setPeriod(l);
+            }
+            else{
+                int peri1= (int)(leaves.getEndDate().toEpochDay()- leaves.getStartDate().toEpochDay());
+                int peri = peri1 - count;
+                
+                if(leave.getType() == LeaveTypeEnum.ANNUAL_LEAVE){
+                    if(peri>staff.getAnuLeave()){
+                    return null;
+                    }
                 }
-            }
 
-            if(leave.getType() == LeaveTypeEnum.MEDICAL_LEAVE){
-                if(peri>staff.getMediLeave()){
-                    return null;
-                 }
-            }
+                if(leave.getType() == LeaveTypeEnum.MEDICAL_LEAVE){
+                    if(peri>staff.getMediLeave()){
+                        return null;
+                    }
+                }
 
-            if(leave.getType() == LeaveTypeEnum.COMPENSATION_LEAVE){
-                if(peri>staff.getCompLeave()){
-                    return null;
-                 }
+                // if(leave.getType() == LeaveTypeEnum.COMPENSATION_LEAVE){
+                //     if(peri>staff.getCompLeave()){
+                //         return null;
+                //      }
+                // }
+                leave.setPeriod(peri);
             }
-
-            
         leave.setStatus(LeaveStatusEnum.UPDATED);
-        leave.setPeriod(peri);
         leave.setType(leaves.getType());
         leaveRepository.save(leave);
         
@@ -111,32 +117,39 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     @Override
-    public Leave createLeaveHistory(Integer id, Leave leaves) {
-        Staff staff = staffRepo.findById(id).get();
+    public Leave createLeaveHistory(Integer stfid, Leave leaves) {
+        Staff staff = staffRepo.findById(stfid).get();
         Leave leaveHistory = new Leave();
         leaveHistory.setStartDate(leaves.getStartDate());
         leaveHistory.setEndDate(leaves.getEndDate());
         leaveHistory.setLeave(staff);
         LocalDate date1 = leaves.getStartDate();
-			LocalDate date2 = leaves.getEndDate();
+        LocalDate date2 = leaves.getEndDate();
 
-			List<Holiday> dates = calendarRepo.findByYear(date1.getYear());
-            if(date1.getYear() != date2.getYear()){
-            List<Holiday> dates1 = calendarRepo.findByYear(date2.getYear());
-                for(Holiday h: dates1){
-                    dates.add(h);
-                }
+        List<Holiday> dates = calendarRepo.findByYear(date1.getYear());
+        if(date1.getYear() != date2.getYear()){
+        List<Holiday> dates1 = calendarRepo.findByYear(date2.getYear());
+            for(Holiday h: dates1){
+                dates.add(h);
+            }
+        }
+        
+        int count = 0;
+        for(int i = 0; i< dates.size(); i++ ){
+            if((dates.get(i).getDate().isEqual(date1) || dates.get(i).getDate().isAfter(date1)) && (dates.get(i).getDate().isEqual(date2) || dates.get(i).getDate().isBefore(date2))){
+                count++;
             }
             
-			int count = 0;
-			for(int i = 0; i< dates.size(); i++ ){
-				if((dates.get(i).getDate().isEqual(date1) || dates.get(i).getDate().isAfter(date1)) && (dates.get(i).getDate().isEqual(date2) || dates.get(i).getDate().isBefore(date2))){
-					count++;
-				}
-                
-			}
+        }
 
-            
+        if(leaves.getType() == LeaveTypeEnum.COMPENSATION_LEAVE){
+            if(leaves.getPeriod()>staff.getCompLeave()){
+                return null;
+            }            
+            int l = leaves.getPeriod()-count;
+            leaveHistory.setPeriod(l);
+        }
+        else{
             int peri1= (int)(leaves.getEndDate().toEpochDay()- leaves.getStartDate().toEpochDay());
             int peri= peri1-count;
             if(leaves.getType() == LeaveTypeEnum.ANNUAL_LEAVE){
@@ -153,14 +166,15 @@ public class LeaveServiceImpl implements LeaveService {
 
             }
 
-            if(leaves.getType() == LeaveTypeEnum.COMPENSATION_LEAVE){
-                if(peri>staff.getCompLeave()){
-                    return null;
-                }
+            // if(leaves.getType() == LeaveTypeEnum.COMPENSATION_LEAVE){
+            //     if(peri>staff.getCompLeave()){
+            //         return null;
+            //     }
 
-            }
+            // }
         
-        leaveHistory.setPeriod(peri);
+            leaveHistory.setPeriod(peri);
+        }
         leaveHistory.setReason(leaves.getReason());
         leaveHistory.setType(leaves.getType());
         leaveHistory.setWork(leaves.getWork());
@@ -199,7 +213,7 @@ public class LeaveServiceImpl implements LeaveService {
 
             if(leaves.getType() == LeaveTypeEnum.COMPENSATION_LEAVE){
                 int peri = leaves.getPeriod();
-                    int i = staff.getCompLeave()-peri;
+                    double i = staff.getCompLeave()-peri;
                     staff.setCompLeave(i);
                     staffRepo.saveAndFlush(staff);
                     leaveRepository.saveAndFlush(leaves);
@@ -225,13 +239,15 @@ public class LeaveServiceImpl implements LeaveService {
     @Override
     public Leave withdrawLeave(Integer id) {
         Leave leave = getwithLeaveId(id);
-        if(leave.getStatus() != LeaveStatusEnum.UPDATED && leave.getStatus() != LeaveStatusEnum.SUBMITTED){
+        if(leave.getStatus() != LeaveStatusEnum.APPROVED){
             return null;
         }
         leave.setStatus(LeaveStatusEnum.WITHDRAWN);
         leaveRepository.saveAndFlush(leave);
         return getwithLeaveId(id);
     }
+
+
     
 }
 

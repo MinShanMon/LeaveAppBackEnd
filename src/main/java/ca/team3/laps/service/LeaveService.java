@@ -18,9 +18,7 @@ public interface LeaveService {
     Leave createLeaveHistory(Integer id,Leave leave);
 
     public List<Staff> getStaff();
-
     
-
     List<Staff> getSubordinate(Integer id);
 
     Leave approveLeave(Leave leave);
