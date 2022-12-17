@@ -10,5 +10,7 @@ public interface ExtraHourService {
 
     ExtraHour updExtraHour(Integer id, ExtraHour extraHour);
 
-    ExtraHour approvExtraHour(ExtraHour extraHour);
+    ExtraHour approvExtraHour(Integer id);
+
+    ExtraHour rejecExtraHour(Integer id);
 }

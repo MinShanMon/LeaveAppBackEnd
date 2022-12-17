@@ -5,13 +5,17 @@ import org.springframework.stereotype.Service;
 
 import ca.team3.laps.model.ExtraHour;
 import ca.team3.laps.model.LeaveStatusEnum;
+import ca.team3.laps.model.Staff;
 import ca.team3.laps.repository.ExtraHourRepository;
+import ca.team3.laps.repository.StaffRepo;
 
 @Service
 public class ExtraHourServiceImpl implements ExtraHourService{
     @Autowired
     ExtraHourRepository extraHourRepository;
 
+    @Autowired
+    StaffRepo staffRepo;
     @Override
     public ExtraHour createExtraHour(ExtraHour extraHour) {
         ExtraHour newex= new ExtraHour();
@@ -46,13 +50,26 @@ public class ExtraHourServiceImpl implements ExtraHourService{
     }
 
     @Override
-    public ExtraHour approvExtraHour(ExtraHour extraHour) {
-        ExtraHour ext = extraHourRepository.findById(extraHour.getId()).get();
+    public ExtraHour approvExtraHour(Integer id) {
+        ExtraHour ext = extraHourRepository.findById(id).get();
         if(ext.getStatus() != LeaveStatusEnum.SUBMITTED && ext.getStatus() != LeaveStatusEnum.UPDATED){
             return null;
         }
-        
-        return null;
+        ext.setStatus(LeaveStatusEnum.APPROVED);
+        Staff staff = staffRepo.findById(ext.getStaff_id()).get();
+        double value = ext.getWorking_hour()/8;
+        staff.setCompLeave(value);
+        staffRepo.saveAndFlush(staff);
+        extraHourRepository.saveAndFlush(ext);
+        return ext;
+    }
+
+    @Override
+    public ExtraHour rejecExtraHour(Integer id){
+        ExtraHour ext = extraHourRepository.findById(id).get();
+        ext.setStatus(LeaveStatusEnum.REJECTED);
+        extraHourRepository.saveAndFlush(ext);
+        return ext;
     }
 
     
