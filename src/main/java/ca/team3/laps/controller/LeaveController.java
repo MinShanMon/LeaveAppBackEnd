@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import ca.team3.laps.exception.AdminException;
+import ca.team3.laps.exception.LeaveException;
 import ca.team3.laps.model.Leave;
 
 import ca.team3.laps.model.Staff;
@@ -29,22 +31,46 @@ public class LeaveController {
     private LeaveService leaveService;
     //get leavehistory with Staffid
     @GetMapping(value = "/getWithStaffId/{id}", produces = "application/json")
-    public @ResponseBody List<Leave> getHistory(@PathVariable("id") Integer id){
-        List<Leave> Leaves = new ArrayList<Leave>();
-        Leaves = leaveService.leaveHistory(id);
-        return Leaves;
+    public ResponseEntity getHistory(@PathVariable("id") Integer id){
+        try{
+            List<Leave> Leaves = new ArrayList<Leave>();
+            Leaves = leaveService.leaveHistory(id);
+            return new ResponseEntity<>(Leaves, HttpStatus.CREATED);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     //update leavehistory before approve or reject
     @PutMapping(value="/put")
-    public @ResponseBody Leave updateLeaveHistory(@RequestBody Leave leave){
-        return leaveService.updateLeaveHistory(leave.getId(), leave);    
+    public ResponseEntity updateLeaveHistory(@RequestBody Leave leave){
+        try{
+            // return ResponseEntity.status(HttpStatus.CREATED).body(leaveService.updateLeaveHistory(leave.getId(), leave));
+            return new ResponseEntity<>(leaveService.updateLeaveHistory(leave.getId(), leave), HttpStatus.CREATED);
+                
+        }
+        catch(LeaveException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        catch(Exception e){            
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     //create leavehistory
     @PostMapping(value="/post/{staffid}")
-    public @ResponseBody Leave updateLeaveHistoryDisplay(@PathVariable("staffid") Integer id, @RequestBody Leave leave){
-        return leaveService.createLeaveHistory(id, leave);
+    public ResponseEntity updateLeaveHistoryDisplay(@PathVariable("staffid") Integer id, @RequestBody Leave leave){
+        try{
+            return new ResponseEntity<>(leaveService.createLeaveHistory(id, leave), HttpStatus.CREATED);
+            // leaveService.createLeaveHistory(id, leave);
+        }
+        catch(LeaveException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // @GetMapping(value = "/getStaff", produces = "application/json")

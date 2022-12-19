@@ -25,18 +25,18 @@ public class AdminStaffServiceImpl implements AdminStaffService {
         return staffRepo.findByStfId(id);
     }
 
-    @Override
-    public void createStaff(Staff staff) {
-        createAccount(staff);
-        staffRepo.save(staff);
-    }
+    // @Override
+    // public void createStaff(Staff staff) {
+    //     createAccount(staff);
+    //     staffRepo.save(staff);
+    // }
 
-    @Override
-    public void modifyStaff(Staff staff) {
-        Staff staffRec = staffRepo.findByStfId(staff.getStfId());
-        staffRec.setRoleId(staff.getRoleId());
-        staffRepo.save(staffRec);
-    }
+    // @Override
+    // public void modifyStaff(Staff staff) {
+    //     Staff staffRec = staffRepo.findByStfId(staff.getStfId());
+    //     staffRec.setRoleId(staff.getRoleId());
+    //     staffRepo.save(staffRec);
+    // }
 
     @Override
     public void deleteStaff(Staff staff) {

@@ -31,18 +31,22 @@ public class LapsApplication {
 	// .baseUrl("https://holidayapi.com/v1/holidays")
 	// .build();
 	// }
+
+
+
 	@Autowired
 	StaffRepo staffRepository;
 
 	@Bean
 	public CommandLineRunner run(StaffRepo staffRepository, LeaveRepository leaveRepository, ExtraHourService extraHourService) {
 		return args -> {
-			Staff javis = staffRepository.save(new Staff(1, 0, "Javis", "password", 3, "alrigh", "javis", "john",
-					true, "Javis@gmail.com", 5, 10, 1));
-			staffRepository.save(new Staff(2, 1, "Goh", "password", 3, "alrigh", "goh", "john",
-					true, "goh@gmail.com", 5, 10, 1));
-
-					Leave leave1 = new Leave(LeaveTypeEnum.MEDICAL_LEAVE, LocalDate.now(), LocalDate.now().plusDays(15), LocalDate.now().plusDays(10).getDayOfYear()-LocalDate.now().plusDays(5).getDayOfYear(),LeaveStatusEnum.SUBMITTED, "null", "null", javis);
+			// Staff javis = staffRepository.save(new Staff(1, 0, "Javis", "password", 3, "alrigh", "javis", "john",
+			// 		true, "Javis@gmail.com", 5, 10, 1));
+			// staffRepository.save(new Staff(2, 1, "Goh", "password", 3, "alrigh", "goh", "john",
+			// 		true, "goh@gmail.com", 5, 10, 1));
+			// Staff javiss = staffRepository.save(new Staff(1, 0, "minshan", "password", "shanmon@gmail.com", "notitile", "shan", "mon", true, null, null, 60, 60, 10, 0, null, null));
+			Staff javis = staffRepository.save(new Staff(1, 0, "shan", "password", "nottile", "shan", "mon", true, "shanmon2017@gmail.com", 60, 60, 60));
+					Leave leave1 = new Leave(LeaveTypeEnum.MEDICAL_LEAVE, LocalDate.now(), LocalDate.now().plusDays(15), LocalDate.now().plusDays(10).getDayOfYear()-LocalDate.now().plusDays(5).getDayOfYear(),LeaveStatusEnum.REJECTED, "null", "null", javis);
 					leaveRepository.saveAndFlush(leave1);
 					Leave leave2 = new Leave(LeaveTypeEnum.MEDICAL_LEAVE, LocalDate.now().plusDays(2), LocalDate.now().plusDays(4), 2, LeaveStatusEnum.SUBMITTED, "null", "null", javis);
 					leaveRepository.saveAndFlush(leave2);	

@@ -1,5 +1,6 @@
 package ca.team3.laps.model;
 
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -23,6 +25,7 @@ import javax.persistence.JoinColumn;
 
 @Data
 @Entity
+@Table(name = "Staffs")
 public class Staff {
 
 
@@ -34,55 +37,66 @@ public class Staff {
     @Column(name = "managerid", nullable = true)
     private int managerId;
 
-    private String username;
+    
+	@Column(nullable = false, length = 20)
+	private String username;
 
-    private String password;
+	@Column(nullable = false, length = 64)
+	private String password;
 
-    @Column(name = "role_id", nullable = false)
-    private int roleId;
+	@Column(nullable = false, unique = true, length = 45)
+	private String email;
 
-    @Column(name="job_title", nullable = false)
-    private String title;
+	@Column(name = "job_title", nullable = false)
+	private String title;
 
-    private String firstname;
+	private String firstname;
 
-    private String lastname;
+	private String lastname;
 
-    private boolean status;
+	private boolean status;
 
-    private String email;
+	@Column(name = "one_time_password")
+	private String otp;
 
-    @Column(name="annual_leave_entitlement", nullable = false)
+	@Column(name = "otp_requested_time")
+	private Date otpReqTime;
+
+	@Column(name="anual_leave_entitlemnt")
 	private int anuLeave;
 
-	@Column(name="medi_requested_entitlement", nullable = false)
-    private int mediLeave;
+	@Column(name="medi_requested_entitlement")
+	private int mediLeave;
 
-	@Column(name="comp_requested_entitlement", nullable = false)
-    private double compLeave;
+	@Column(name="comp_requested_entitlement")
+	private double compLeave;
 
+	@Column(name = "failed_attempt", nullable = false)
+	private int failedAttempt;
+    
     @JsonIgnore
     @OneToMany(mappedBy = "leave")
 	private List<Leave> staffLeave;
 
-    @ManyToMany(targetEntity = LeaveType.class,cascade = {CascadeType.ALL, CascadeType.PERSIST}, fetch=FetchType.EAGER)
-    @JoinTable(name = "StaffAndLeaveType", joinColumns = {
-        @JoinColumn(name="staff_id", referencedColumnName = "staff_id")},
-        inverseJoinColumns = { @JoinColumn(name="LTid", referencedColumnName = "id")}
-        )
-        private List<LeaveType> LTSet;
+
+    @JsonIgnore
+    @ManyToMany(targetEntity = Role.class, cascade = {CascadeType.ALL, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @JoinTable(name = "staff_role", joinColumns = {@JoinColumn(name = "staff_id", referencedColumnName = "staff_id")}, 
+    inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "role_id")})
+    private List<Role> roles;
+
 
 
     public Staff(){}
     
-    public Staff(int stfId, int managerId, String username, String password, int roleId, String title,
+    public Staff(int stfId, int managerId, String username, String password,String title,
             String firstname, String lastname, boolean status, String email, int anuLeave, int mediLeave,
             int compLeave) {
         this.stfId = stfId;
         this.managerId = managerId;
         this.username = username;
         this.password = password;
-        this.roleId = roleId;
+        // this.roleId = roleId;
         this.title = title;
         this.firstname = firstname;
         this.lastname = lastname;

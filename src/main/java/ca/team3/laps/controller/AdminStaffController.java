@@ -39,17 +39,17 @@ public class AdminStaffController {
         return ResponseEntity.status(HttpStatus.OK).body(staff);
     }
 
-    @PostMapping("/staff")
-    public ResponseEntity createStaff(@RequestBody Staff staff) {
-        adminStaffService.createStaff(staff);
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
-    }
+    // @PostMapping("/staff")
+    // public ResponseEntity createStaff(@RequestBody Staff staff) {
+    //     adminStaffService.createStaff(staff);
+    //     return ResponseEntity.status(HttpStatus.CREATED).body(null);
+    // }
 
-    @PutMapping("/staff")
-    public ResponseEntity modifyStaff(@RequestBody Staff staff) {
-        adminStaffService.modifyStaff(staff);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
-    }
+    // @PutMapping("/staff")
+    // public ResponseEntity modifyStaff(@RequestBody Staff staff) {
+    //     adminStaffService.modifyStaff(staff);
+    //     return ResponseEntity.status(HttpStatus.OK).body(null);
+    // }
 
     @DeleteMapping("/staff")
     public ResponseEntity deleteStaff(@RequestBody Staff staff) {

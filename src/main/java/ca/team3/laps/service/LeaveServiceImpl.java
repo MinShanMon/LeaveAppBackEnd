@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+import ca.team3.laps.exception.LeaveException;
 import ca.team3.laps.model.Leave;
 import ca.team3.laps.model.LeaveStatusEnum;
 import ca.team3.laps.model.LeaveTypeEnum;
@@ -35,11 +35,11 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     @Override
-    public Leave updateLeaveHistory(Integer id, Leave leaves) {
+    public Leave updateLeaveHistory(Integer id, Leave leaves) throws ca.team3.laps.exception.LeaveException{
         // TODO Auto-generated method stub
         Leave leave = leaveRepository.findById(id).get();
         if(leave.getStatus() != LeaveStatusEnum.SUBMITTED && leave.getStatus() != LeaveStatusEnum.UPDATED){
-            return null;
+            throw new LeaveException("status cannot update, it is already '"+ leave.getStatus()+".'");
         }
         leave.setStartDate(leaves.getStartDate());
         leave.setEndDate(leaves.getEndDate());
@@ -65,7 +65,7 @@ public class LeaveServiceImpl implements LeaveService {
             Staff staff = leave.getLeave();
             if(leaves.getType() == LeaveTypeEnum.COMPENSATION_LEAVE){
                 if(leaves.getPeriod()>staff.getCompLeave()){
-                    return null;
+                    throw new LeaveException("Check Start Date and End Date and period, You only left "+ staff.getCompLeave()+". You are trying to enter " + leaves.getPeriod()+" days");
                 }            
                 int l = leaves.getPeriod()-count;
                 leave.setPeriod(l);
@@ -76,13 +76,14 @@ public class LeaveServiceImpl implements LeaveService {
                 
                 if(leave.getType() == LeaveTypeEnum.ANNUAL_LEAVE){
                     if(peri>staff.getAnuLeave()){
-                    return null;
+                    throw new LeaveException("Check Start Date and End Date, You only left "+ staff.getAnuLeave()+"You are trying to enter " + peri+" days");
                     }
                 }
 
                 if(leave.getType() == LeaveTypeEnum.MEDICAL_LEAVE){
                     if(peri>staff.getMediLeave()){
-                        return null;
+                        throw new LeaveException("Check Start Date and End Date, You only left "+ staff.getMediLeave()+". You are trying to enter " + peri+" days");
+                    
                     }
                 }
 
@@ -117,7 +118,7 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     @Override
-    public Leave createLeaveHistory(Integer stfid, Leave leaves) {
+    public Leave createLeaveHistory(Integer stfid, Leave leaves) throws LeaveException{
         Staff staff = staffRepo.findById(stfid).get();
         Leave leaveHistory = new Leave();
         leaveHistory.setStartDate(leaves.getStartDate());
@@ -144,7 +145,7 @@ public class LeaveServiceImpl implements LeaveService {
 
         if(leaves.getType() == LeaveTypeEnum.COMPENSATION_LEAVE){
             if(leaves.getPeriod()>staff.getCompLeave()){
-                return null;
+                throw new LeaveException("Check Start Date and End Date and period, You only left "+ staff.getCompLeave()+". You are trying to enter " + leaves.getPeriod()+" days");
             }            
             int l = leaves.getPeriod()-count;
             leaveHistory.setPeriod(l);
@@ -154,24 +155,17 @@ public class LeaveServiceImpl implements LeaveService {
             int peri= peri1-count;
             if(leaves.getType() == LeaveTypeEnum.ANNUAL_LEAVE){
                 if(peri>staff.getAnuLeave()){
-                   return null;
+                    throw new LeaveException("Check Start Date and End Date, You only left "+ staff.getAnuLeave()+". You are trying to enter " + peri+" days");
                 }
 
             }
 
             if(leaves.getType() == LeaveTypeEnum.MEDICAL_LEAVE){
                 if(peri>staff.getMediLeave()){
-                    return null;
+                    throw new LeaveException("Check Start Date and End Date, You only left "+ staff.getMediLeave()+". You are trying to enter " + peri+" days");
                  }
 
             }
-
-            // if(leaves.getType() == LeaveTypeEnum.COMPENSATION_LEAVE){
-            //     if(peri>staff.getCompLeave()){
-            //         return null;
-            //     }
-
-            // }
         
             leaveHistory.setPeriod(peri);
         }
