@@ -37,7 +37,7 @@ public class ExtraHour {
     @Enumerated(EnumType.STRING)
     private LeaveStatusEnum status;
 
-    private int working_hour;
+    private double working_hour;
 
     
 }
