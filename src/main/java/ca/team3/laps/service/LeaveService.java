@@ -23,9 +23,13 @@ public interface LeaveService {
     
     List<Staff> getSubordinate(Integer id);
 
-    Leave approveLeave(Leave leave);
+    Leave approveLeave(Leave leave) throws LeaveException;
 
     Leave deleteLeave(Integer id);
 
     Leave withdrawLeave(Integer id);
+
+    List<Leave> viewMulPendingDetails();
+
+    Leave viewOnePendingDetail(int id) throws LeaveException;
 }

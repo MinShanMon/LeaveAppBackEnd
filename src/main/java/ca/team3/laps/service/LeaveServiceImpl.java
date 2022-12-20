@@ -2,6 +2,10 @@ package ca.team3.laps.service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
+
 import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -178,11 +182,11 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     @Override
-    public Leave approveLeave(Leave leave) {
+    public Leave approveLeave(Leave leave) throws LeaveException{
         Leave leaves = getwithLeaveId(leave.getId());
         Staff staff = leaves.getLeave();
         if(leaves.getStatus() != LeaveStatusEnum.SUBMITTED && leaves.getStatus() != LeaveStatusEnum.UPDATED ){
-            return null;
+            throw new LeaveException("it is already "+ leaves.getStatus()+". ");
         }
         leaves.setStatus(leave.getStatus());
         if(leave.getStatus() == LeaveStatusEnum.APPROVED){
@@ -241,7 +245,24 @@ public class LeaveServiceImpl implements LeaveService {
         return getwithLeaveId(id);
     }
 
+    @Override
+    @Transactional
+    public List<Leave> viewMulPendingDetails() {
+        List<Leave> leaves = (List<Leave>)leaveRepository.findAll();
+        leaves = leaves.stream().filter(u -> u.getStatus().equals(LeaveStatusEnum.SUBMITTED)).collect(Collectors.toList());
+        return leaves; 
+    }
 
-    
+
+    @Override
+    @Transactional
+    public Leave viewOnePendingDetail(int id) throws LeaveException{
+        Leave leave = leaveRepository.findById(id).get();
+        if(leave.getStatus() == LeaveStatusEnum.SUBMITTED){
+        return leaveRepository.getDetail(id);
+        }else{
+            throw new LeaveException("Record not found!");
+        }
+    }
 }
 

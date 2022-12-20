@@ -106,6 +106,8 @@ public class Staff {
         this.mediLeave = mediLeave;
         this.compLeave = compLeave;
     }
+
+
     
 
 }
