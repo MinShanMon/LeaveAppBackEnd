@@ -13,132 +13,113 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import ca.team3.laps.exception.AdminException;
 import ca.team3.laps.exception.LeaveException;
 import ca.team3.laps.model.Leave;
 
-import ca.team3.laps.model.Staff;
 import ca.team3.laps.service.LeaveService;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-
 
 @RestController
 @RequestMapping("/api")
 public class LeaveController {
     @Autowired
     private LeaveService leaveService;
-    //get leavehistory with Staffid
+
+    // get leavehistory with Staffid
     @GetMapping(value = "/getWithStaffId/{id}", produces = "application/json")
-    public ResponseEntity getHistory(@PathVariable("id") Integer id){
-        try{
+    public ResponseEntity getHistory(@PathVariable("id") Integer id) {
+        try {
             List<Leave> Leaves = new ArrayList<Leave>();
             Leaves = leaveService.leaveHistory(id);
             return new ResponseEntity<>(Leaves, HttpStatus.OK);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    //update leavehistory before approve or reject
-    @PutMapping(value="/leave/put")
-    public ResponseEntity updateLeaveHistory(@RequestBody Leave leave){
-        try{
-            // return ResponseEntity.status(HttpStatus.CREATED).body(leaveService.updateLeaveHistory(leave.getId(), leave));
+    // update leavehistory before approve or reject
+    @PutMapping(value = "/leave/put")
+    public ResponseEntity updateLeaveHistory(@RequestBody Leave leave) {
+        try {
+            // return
+            // ResponseEntity.status(HttpStatus.CREATED).body(leaveService.updateLeaveHistory(leave.getId(),
+            // leave));
             return new ResponseEntity<>(leaveService.updateLeaveHistory(leave.getId(), leave), HttpStatus.CREATED);
-                
-        }
-        catch(LeaveException e){
+
+        } catch (LeaveException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-        catch(Exception e){            
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    //create leavehistory
-    @PostMapping(value="/post/{staffid}")
-    public ResponseEntity updateLeaveHistoryDisplay(@PathVariable("staffid") Integer id, @RequestBody Leave leave){
-        try{
+    // create leavehistory
+    @PostMapping(value = "/post/{staffid}")
+    public ResponseEntity updateLeaveHistoryDisplay(@PathVariable("staffid") Integer id, @RequestBody Leave leave) {
+        try {
             return new ResponseEntity<>(leaveService.createLeaveHistory(id, leave), HttpStatus.CREATED);
             // leaveService.createLeaveHistory(id, leave);
-        }
-        catch(LeaveException e){
+        } catch (LeaveException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // @GetMapping(value = "/getStaff", produces = "application/json")
-    // public @ResponseBody List<Staff> staffList(){
-    //     return leaveService.getStaff();
-    // }
-
-    // @GetMapping(value = "/getStaff/{id}", produces = "application/json")
-    // public @ResponseBody Staff getStaffwithid(@PathVariable("id") Integer id){
-    //     return leaveService.getStaffWithStaffId(id);
-    // }
-
-        //get leave history with leaveid
+    // get leave history with leaveid
     @GetMapping(value = "/getLeave/{id}", produces = "application/json")
-    public ResponseEntity getLeaveWithid(@PathVariable("id") Integer id){        
-        try{
+    public ResponseEntity getLeaveWithid(@PathVariable("id") Integer id) {
+        try {
             return new ResponseEntity<>(leaveService.getwithLeaveId(id), HttpStatus.OK);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    //get subordinate with managerid
+
+    // get subordinate with managerid
     @GetMapping(value = "/getSubordinate/{id}", produces = "application/json")
-    public ResponseEntity getSubordinate(@PathVariable("id") Integer id){        
-        try{
+    public ResponseEntity getSubordinate(@PathVariable("id") Integer id) {
+        try {
             return new ResponseEntity<>(leaveService.getSubordinate(id), HttpStatus.OK);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    //manager approve or reject
+    // manager approve or reject
 
     @PutMapping(value = "/approve/put", produces = "application/json")
-    public ResponseEntity getLeaveWithid(@RequestBody Leave leave){
-        try{
+    public ResponseEntity getLeaveWithid(@RequestBody Leave leave) {
+        try {
             return new ResponseEntity<>(leaveService.approveLeave(leave), HttpStatus.CREATED);
-        }
-        catch(LeaveException e){
+        } catch (LeaveException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    //delete leavehistory
+    // delete leavehistory
     @PutMapping(value = "/delete/put/{id}")
-    public @ResponseBody Leave deleteLeave(@PathVariable("id") int id){
+    public @ResponseBody Leave deleteLeave(@PathVariable("id") int id) {
         return leaveService.deleteLeave(id);
     }
 
-    //withdraw leavehistory
+    // withdraw leavehistory
     @PutMapping(value = "/withdraw/put/{id}")
-    public @ResponseBody Leave withdrawLeave(@PathVariable("id") int id){
+    public @ResponseBody Leave withdrawLeave(@PathVariable("id") int id) {
         return leaveService.withdrawLeave(id);
     }
 
-    //get all pending
+    // get all pending
     @GetMapping("/viewpending")
-    public ResponseEntity <List<Leave>> getPending() {
-        return new ResponseEntity<>(leaveService.viewMulPendingDetails(),HttpStatus.OK);
+    public ResponseEntity<List<Leave>> getPending() {
+        return new ResponseEntity<>(leaveService.viewMulPendingDetails(), HttpStatus.OK);
     }
 
-    //get only one pending
+    // get only one pending
     @GetMapping("/viewdetail/{id}")
-    public ResponseEntity <Leave> getDetail(@PathVariable int id) throws LeaveException{
-        return new ResponseEntity<>(leaveService.viewOnePendingDetail(id),HttpStatus.OK);
+    public ResponseEntity<Leave> getDetail(@PathVariable int id) throws LeaveException {
+        return new ResponseEntity<>(leaveService.viewOnePendingDetail(id), HttpStatus.OK);
     }
 }
