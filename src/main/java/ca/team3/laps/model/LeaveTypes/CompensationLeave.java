@@ -16,7 +16,7 @@ public class CompensationLeave extends LeaveType {
 
     private float overtimeRatio;
 
-    public CompensationLeave(long id, float granularity, float leaveDays, float overtimeRatio) {
+    public CompensationLeave(float granularity, float leaveDays, float overtimeRatio) {
         super(granularity, leaveDays);
         this.overtimeRatio = overtimeRatio;
     }

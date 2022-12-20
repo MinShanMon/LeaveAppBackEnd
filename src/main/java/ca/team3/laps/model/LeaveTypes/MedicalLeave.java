@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MedicalLeave extends LeaveType {
 
-    public MedicalLeave(long id, float granularity, float leaveDays) {
+    public MedicalLeave(float granularity, float leaveDays) {
         super(granularity, leaveDays);
     }
 }

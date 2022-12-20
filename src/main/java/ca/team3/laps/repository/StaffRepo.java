@@ -26,6 +26,10 @@ public interface StaffRepo extends JpaRepository<Staff, Integer> {
 
     public int countByUsername(String username);
 
+    public List<Staff> findByStatusFalse();
+
+    public List<Staff> findByStatusTrue();
+
     @Query("SELECT e2 FROM Staff e1, Staff e2 WHERE e1.stfId = e2.managerId AND e1.stfId = :eid")
     List<Staff> findSubordinates(@Param("eid") Integer eid);
 }

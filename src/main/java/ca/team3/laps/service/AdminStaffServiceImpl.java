@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ca.team3.laps.model.Staff;
+import ca.team3.laps.model.LeaveTypes.AnnualLeave;
+import ca.team3.laps.model.LeaveTypes.CompensationLeave;
+import ca.team3.laps.model.LeaveTypes.MedicalLeave;
+import ca.team3.laps.repository.LeaveTypeRepo;
 import ca.team3.laps.repository.StaffRepo;
 
 @Service
@@ -15,26 +19,42 @@ public class AdminStaffServiceImpl implements AdminStaffService {
     @Autowired
     StaffRepo staffRepo;
 
+    @Autowired
+    LeaveTypeRepo leaveTypeRepo;
+
     @Override
     public List<Staff> findAllStaff() {
         return staffRepo.findAll();
     }
 
     @Override
-    public Staff findStaffById(Integer id) {
+    public List<Staff> findAllActiveStaff() {
+        return staffRepo.findByStatusTrue();
+    }
+
+    @Override
+    public Staff findStaffById(int id) {
         return staffRepo.findByStfId(id);
     }
 
-    // @Override
-    // public void createStaff(Staff staff) {
-    //     createAccount(staff);
-    //     staffRepo.save(staff);
-    // }
+    @Override
+    public void createStaff(Staff staff) {
+        createAccount(staff);
+        setLeaveEntitlements(staff);
+        staffRepo.save(staff);
+    }
 
     // @Override
     // public void modifyStaff(Staff staff) {
     //     Staff staffRec = staffRepo.findByStfId(staff.getStfId());
     //     staffRec.setRoleId(staff.getRoleId());
+    //     staffRec.setAnuLeave(staff.getAnuLeave());
+    //     staffRec.setTitle(staff.getTitle());
+    //     staffRec.setMediLeave(staff.getMediLeave());
+    //     staffRec.setCompLeave(staff.getCompLeave());
+    //     staffRec.setStatus(staff.isStatus());
+    //     staffRec.setEmail(staff.getEmail());
+    //     staffRec.setManagerId(staff.getManagerId());
     //     staffRepo.save(staffRec);
     // }
 
@@ -52,7 +72,7 @@ public class AdminStaffServiceImpl implements AdminStaffService {
         staffRepo.save(staffRec);
     }
 
-    //Utils
+    // Utils
     private void createAccount(Staff staff) {
         staff.setUsername(generateUsername(staff));
         staff.setPassword(generatePassword());
@@ -79,7 +99,7 @@ public class AdminStaffServiceImpl implements AdminStaffService {
         }
         return Integer.toString(count);
     }
-    
+
     private String generatePassword() {
         Random rnd = new Random();
         char[] password = new char[8];
@@ -87,5 +107,26 @@ public class AdminStaffServiceImpl implements AdminStaffService {
             password[i] = (char) (rnd.nextInt(90) + 33);
         }
         return String.copyValueOf(password);
+    }
+
+    private void setLeaveEntitlements(Staff staff) {
+        AnnualLeave annualLeave = leaveTypeRepo.findByJobTitle(staff.getTitle());
+        if (annualLeave == null) {
+            staff.setAnuLeave(0);
+        } else {
+            staff.setAnuLeave((int) annualLeave.getLeaveDays());
+        }
+        MedicalLeave medicalLeave = leaveTypeRepo.findMedicalLeaveEntitlement();
+        if (medicalLeave == null) {
+            staff.setMediLeave(0);
+        } else {
+            staff.setMediLeave((int) leaveTypeRepo.findMedicalLeaveEntitlement().getLeaveDays());
+        }
+        CompensationLeave compLeave = leaveTypeRepo.findCompLeaveEntitlement();
+        if (compLeave == null) {
+            staff.setCompLeave(0);
+        } else {
+            staff.setCompLeave(leaveTypeRepo.findCompLeaveEntitlement().getLeaveDays());
+        }
     }
 }

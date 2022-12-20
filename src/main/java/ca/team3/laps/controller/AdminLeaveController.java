@@ -27,7 +27,18 @@ public class AdminLeaveController {
     @Autowired
     AdminLeaveService adminLeaveService;
 
-    // POST/PUT/DELETE requests to manage leave types
+    // GET/POST/PUT/DELETE requests to manage leave types
+
+    @GetMapping("/annual")
+    public ResponseEntity getAnnualLeaveEntitlement() {
+        try {
+            List<AnnualLeave> annualLeaveList = adminLeaveService.getAnnualLeaveEntitlements();
+            return ResponseEntity.status(HttpStatus.OK).body(annualLeaveList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
     @PostMapping("/annual")
     public ResponseEntity createAnnualLeaveEntitlement(@RequestBody AnnualLeave annualLeave) {
         try {
@@ -56,9 +67,20 @@ public class AdminLeaveController {
     public ResponseEntity deleteAnnualLeaveEntitleMent(@RequestBody AnnualLeave annualLeave) {
         try {
             adminLeaveService.deleteAnnualLeaveEntitlement(annualLeave);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Annual Leave Entitlement has been deleted successfully");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body("Annual Leave Entitlement has been deleted successfully");
         } catch (AdminException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getError());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/medical")
+    public ResponseEntity getMedicalLeaveEntitlement() {
+        try {
+            MedicalLeave medicalLeave = adminLeaveService.getMedicalLeaveEntitlement();
+            return ResponseEntity.status(HttpStatus.OK).body(medicalLeave);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
@@ -84,6 +106,16 @@ public class AdminLeaveController {
             return ResponseEntity.status(HttpStatus.OK).body(modifiedMedicalLeaveEntitlement);
         } catch (AdminException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getError());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/comp")
+    public ResponseEntity getCompLeaveEntitlement() {
+        try {
+            CompensationLeave compLeave = adminLeaveService.getCompLeaveEntitlement();
+            return ResponseEntity.status(HttpStatus.OK).body(compLeave);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

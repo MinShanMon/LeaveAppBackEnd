@@ -109,7 +109,7 @@ public class AdminLeaveServiceImpl implements AdminLeaveService {
                             "Compensation Leave Entitlement not found. Please create a new one."));
         }
         compLeaveEntitlement.setGranularity(compensationLeave.getGranularity());
-        compLeaveEntitlement.setLeaveDays(0);
+        compLeaveEntitlement.setLeaveDays(compensationLeave.getLeaveDays());
         compLeaveEntitlement.setOvertimeRatio(compensationLeave.getOvertimeRatio());
         return leaveRepo.save(compLeaveEntitlement);
     }

@@ -25,25 +25,25 @@ public class AdminStaffController {
     @Autowired
     AdminStaffService adminStaffService;
 
-    @GetMapping("/staff")
-    public ResponseEntity getAllStaff() {
-        List<Staff> staffList = adminStaffService.findAllStaff();
-        HttpHeaders reactJSHeader = new HttpHeaders();
-        reactJSHeader.set("Access-Control-Allow-Origin", "http://localhost:8081");
-        return ResponseEntity.status(HttpStatus.OK).body(staffList);
-    }
-
-    @GetMapping("/staff/{id}")
-    public ResponseEntity findStaffById(@PathVariable int id) {
-        Staff staff = adminStaffService.findStaffById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(staff);
-    }
-
-    // @PostMapping("/staff")
-    // public ResponseEntity createStaff(@RequestBody Staff staff) {
-    //     adminStaffService.createStaff(staff);
-    //     return ResponseEntity.status(HttpStatus.CREATED).body(null);
+    // @GetMapping("/staff")
+    // public ResponseEntity getAllActiveStaff() {
+    //     List<Staff> staffList = adminStaffService.findAllActiveStaff();
+    //     HttpHeaders reactJSHeader = new HttpHeaders();
+    //     reactJSHeader.set("Access-Control-Allow-Origin", "http://localhost:8081");
+    //     return ResponseEntity.status(HttpStatus.OK).body(staffList);
     // }
+
+    // @GetMapping("/staff/{id}")
+    // public ResponseEntity findStaffById(@PathVariable long id) {
+    //     Staff staff = adminStaffService.findStaffById(id);
+    //     return ResponseEntity.status(HttpStatus.OK).body(staff);
+    // }
+
+    @PostMapping("/staff")
+    public ResponseEntity createStaff(@RequestBody Staff staff) {
+        adminStaffService.createStaff(staff);
+        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+    }
 
     // @PutMapping("/staff")
     // public ResponseEntity modifyStaff(@RequestBody Staff staff) {
