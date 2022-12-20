@@ -30,7 +30,7 @@ public class AdminController {
     AdminService adminService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Account account) {
+    public ResponseEntity<?> login(@RequestBody Account account, HttpSession sessionObj) {
         Account user = account;
         return new ResponseEntity<>(HttpStatus.OK);
     }

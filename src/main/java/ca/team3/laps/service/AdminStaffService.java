@@ -9,7 +9,7 @@ public interface AdminStaffService {
     List<Staff> findAllActiveStaff();
     Staff findStaffById(int id);
     void createStaff(Staff staff);
-    // void modifyStaff(Staff staff);
+    void modifyStaff(Staff staff);
     void deleteStaff(Staff staff);
     void updateAnLeaveEntitlement(Staff staff);
 }

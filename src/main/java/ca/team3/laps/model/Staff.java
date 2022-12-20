@@ -79,12 +79,10 @@ public class Staff {
 	private List<Leave> staffLeave;
 
 
-    @JsonIgnore
     @ManyToMany(targetEntity = Role.class, cascade = {CascadeType.ALL, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "staff_role", joinColumns = {@JoinColumn(name = "staff_id", referencedColumnName = "staff_id")}, 
     inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "role_id")})
     private List<Role> roles;
-
 
 
     public Staff(){}

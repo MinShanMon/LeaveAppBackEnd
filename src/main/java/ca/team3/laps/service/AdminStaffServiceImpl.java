@@ -1,16 +1,19 @@
 package ca.team3.laps.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ca.team3.laps.model.Role;
 import ca.team3.laps.model.Staff;
 import ca.team3.laps.model.LeaveTypes.AnnualLeave;
 import ca.team3.laps.model.LeaveTypes.CompensationLeave;
 import ca.team3.laps.model.LeaveTypes.MedicalLeave;
 import ca.team3.laps.repository.LeaveTypeRepo;
+import ca.team3.laps.repository.RoleRepository;
 import ca.team3.laps.repository.StaffRepo;
 
 @Service
@@ -21,6 +24,9 @@ public class AdminStaffServiceImpl implements AdminStaffService {
 
     @Autowired
     LeaveTypeRepo leaveTypeRepo;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     @Override
     public List<Staff> findAllStaff() {
@@ -44,19 +50,29 @@ public class AdminStaffServiceImpl implements AdminStaffService {
         staffRepo.save(staff);
     }
 
-    // @Override
-    // public void modifyStaff(Staff staff) {
-    //     Staff staffRec = staffRepo.findByStfId(staff.getStfId());
-    //     staffRec.setRoleId(staff.getRoleId());
-    //     staffRec.setAnuLeave(staff.getAnuLeave());
-    //     staffRec.setTitle(staff.getTitle());
-    //     staffRec.setMediLeave(staff.getMediLeave());
-    //     staffRec.setCompLeave(staff.getCompLeave());
-    //     staffRec.setStatus(staff.isStatus());
-    //     staffRec.setEmail(staff.getEmail());
-    //     staffRec.setManagerId(staff.getManagerId());
-    //     staffRepo.save(staffRec);
-    // }
+    @Override
+    public void modifyStaff(Staff staff) {
+        Staff staffRec = staffRepo.findByStfId(staff.getStfId());
+        setRolesFromReactForm(staff, staffRec);
+        staffRec.setAnuLeave(staff.getAnuLeave());
+        staffRec.setTitle(staff.getTitle());
+        staffRec.setMediLeave(staff.getMediLeave());
+        staffRec.setCompLeave(staff.getCompLeave());
+        staffRec.setStatus(staff.isStatus());
+        staffRec.setEmail(staff.getEmail());
+        staffRec.setManagerId(staff.getManagerId());
+        staffRepo.saveAndFlush(staffRec);
+    }
+
+    private void setRolesFromReactForm(Staff staffForm, Staff staffRec) {
+        List<Role> staffRolesFromForm = staffForm.getRoles();
+        List<Role> staffRolesToSet = new ArrayList<>();
+        staffRolesFromForm.forEach(e -> {
+            Role role = roleRepository.getReferenceById(e.getId());
+            staffRolesToSet.add(role);
+        });
+        staffRec.setRoles(staffRolesToSet);
+    }
 
     @Override
     public void deleteStaff(Staff staff) {
