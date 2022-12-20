@@ -66,6 +66,7 @@ public class LeaveServiceImpl implements LeaveService {
 				}
                 
 			}
+
             Staff staff = leave.getLeave();
             if(leaves.getType() == LeaveTypeEnum.COMPENSATION_LEAVE){
                 if(leaves.getPeriod()>staff.getCompLeave()){
@@ -74,6 +75,7 @@ public class LeaveServiceImpl implements LeaveService {
                 int l = leaves.getPeriod()-count;
                 leave.setPeriod(l);
             }
+
             else{
                 int peri1= (int)(leaves.getEndDate().toEpochDay()- leaves.getStartDate().toEpochDay());
                 int peri = peri1 - count;
@@ -99,6 +101,7 @@ public class LeaveServiceImpl implements LeaveService {
                 leave.setPeriod(peri);
             }
         leave.setStatus(LeaveStatusEnum.UPDATED);
+        leave.setWork(leaves.getWork());
         leave.setType(leaves.getType());
         leaveRepository.save(leave);
         
