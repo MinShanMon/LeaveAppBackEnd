@@ -34,7 +34,7 @@ public class AdminStaffController {
     // }
 
     // @GetMapping("/staff/{id}")
-    // public ResponseEntity findStaffById(@PathVariable long id) {
+    // public ResponseEntity findStaffById(@PathVariable int id) {
     //     Staff staff = adminStaffService.findStaffById(id);
     //     return ResponseEntity.status(HttpStatus.OK).body(staff);
     // }

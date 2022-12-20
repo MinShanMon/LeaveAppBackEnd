@@ -128,6 +128,7 @@ public class LeaveServiceImpl implements LeaveService {
         leaveHistory.setStartDate(leaves.getStartDate());
         leaveHistory.setEndDate(leaves.getEndDate());
         leaveHistory.setLeave(staff);
+        leaveHistory.setReason("null");
         LocalDate date1 = leaves.getStartDate();
         LocalDate date2 = leaves.getEndDate();
 
@@ -173,7 +174,7 @@ public class LeaveServiceImpl implements LeaveService {
         
             leaveHistory.setPeriod(peri);
         }
-        leaveHistory.setReason(leaves.getReason());
+        // leaveHistory.setReason(leaves.getReason());
         leaveHistory.setType(leaves.getType());
         leaveHistory.setWork(leaves.getWork());
         leaveHistory.setStatus(LeaveStatusEnum.SUBMITTED);
