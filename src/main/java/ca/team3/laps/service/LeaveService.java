@@ -29,7 +29,9 @@ public interface LeaveService {
 
     Leave withdrawLeave(Integer id);
 
-    List<Leave> viewMulPendingDetails();
+    List<Leave> viewMulPendingDetails(Integer id);
 
     Leave viewOnePendingDetail(int id) throws LeaveException;
+
+    
 }

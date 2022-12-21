@@ -45,7 +45,7 @@ public class Leave {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
-    private int period;
+    private double period;
 
     @Column(name = "status", columnDefinition = "ENUM('SUBMITTED', 'APPROVED', 'WITHDRAWN', 'UPDATED', 'REJECTED', 'DELETED')")
     @Enumerated(EnumType.STRING)
@@ -57,6 +57,8 @@ public class Leave {
     @Column(name="workDissemination")
     private String work;
 
+    private boolean halfday;
+    
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name="staff_id", nullable = true)

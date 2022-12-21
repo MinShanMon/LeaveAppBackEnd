@@ -20,6 +20,8 @@ import ca.team3.laps.model.LeaveTypes.LeaveType;
 import ca.team3.laps.model.LeaveTypes.MedicalLeave;
 import ca.team3.laps.service.AdminLeaveService;
 
+
+
 @RestController
 @RequestMapping("/api/leave")
 public class AdminLeaveController {
