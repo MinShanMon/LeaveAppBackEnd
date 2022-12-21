@@ -51,8 +51,8 @@ public class LeaveServiceImpl implements LeaveService {
                 throw new LeaveException("Check Start Date and End Date and period, You only left "+ staff.getCompLeave()+". You are trying to enter " + leaves.getPeriod()+" days");
             }  
             leave.setHalfday(leaves.isHalfday());
-            leave.setStartDate(LocalDate.now());
-            leave.setEndDate(LocalDate.now().plusDays(1));            
+            leave.setStartDate(leaves.getStartDate());
+            leave.setEndDate(leaves.getStartDate().plusDays(1));            
             leave.setReason(leaves.getReason());
             leave.setPeriod(.5);
             leave.setType(leaves.getType());
@@ -109,12 +109,6 @@ public class LeaveServiceImpl implements LeaveService {
                     
                     }
                 }
-
-                // if(leave.getType() == LeaveTypeEnum.COMPENSATION_LEAVE){
-                //     if(peri>staff.getCompLeave()){
-                //         return null;
-                //      }
-                // }
                 leave.setPeriod(peri);
             }
         leave.setStatus(LeaveStatusEnum.UPDATED);
