@@ -1,7 +1,5 @@
 package ca.team3.laps;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,10 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import ca.team3.laps.model.Admin;
-import ca.team3.laps.model.ExtraHour;
-import ca.team3.laps.model.Leave;
-import ca.team3.laps.model.LeaveStatusEnum;
-import ca.team3.laps.model.LeaveTypeEnum;
 import ca.team3.laps.model.Role;
 import ca.team3.laps.model.Staff;
 import ca.team3.laps.repository.AdminRepository;
@@ -54,15 +48,16 @@ public class LapsApplication {
 		return args -> {
 			Staff javis = staffRepository.save(new Staff(1, 0, "Javis", "password", "alrigh", "javis", "john",
 					true, "Javis@gmail.com", 5, 10, 1));
-			staffRepository.save(new Staff(2, 1, "Goh", "password", "alrigh", "goh", "john",
+			Staff john = staffRepository.save(new Staff(2, 1, "Goh", "password", "alrigh", "goh", "john",
 					true, "goh@gmail.com", 5, 10, 1));
-			Role admin = roleRepository.save(new Role("admin"));
 			Role manager = roleRepository.save(new Role("manager"));
 			Role employee = roleRepository.save(new Role("employee"));
 			List<Role> roles = new ArrayList<>();
 			roles.add(manager);
 			javis.setRoles(roles);
+			john.setRoles(roles);
 			staffRepository.saveAndFlush(javis);
+			staffRepository.saveAndFlush(john);
 			adminRepository.saveAndFlush(new Admin("admin", "admin"));
 		};
 	}

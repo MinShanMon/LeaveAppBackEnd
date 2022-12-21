@@ -3,6 +3,7 @@ package ca.team3.laps.service;
 import java.util.List;
 
 import ca.team3.laps.exception.AdminException;
+import ca.team3.laps.model.Admin;
 import ca.team3.laps.model.Staff;
 import ca.team3.laps.model.CalendarificAPI.Holiday;
 
@@ -14,6 +15,7 @@ public interface AdminService {
      */
     List<Holiday> getHolidays(String year);
 
-    Staff createStaff(Staff staff) throws AdminException;
+    boolean authenticate(Admin account);
+
 
 }
