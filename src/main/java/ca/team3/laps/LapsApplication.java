@@ -47,12 +47,12 @@ public class LapsApplication {
 			// 		true, "goh@gmail.com", 5, 10, 1));
 			// Staff javiss = staffRepository.save(new Staff(1, 0, "minshan", "password", "shanmon@gmail.com", "notitile", "shan", "mon", true, null, null, 60, 60, 10, 0, null, null));
 			
-			// Staff subo = staffRepository.save(new Staff(1, 0, "sub", "password", "nottile", "shan", "mon", true, "asdf@gmail.com", 60, 60, 60));
-			// Staff javis = staffRepository.save(new Staff(2, 1, "shan", "password", "nottile", "shan", "mon", true, "shanmon2017@gmail.com", 60, 60, 60));
-			// 		Leave leave1 = new Leave(LeaveTypeEnum.MEDICAL_LEAVE, LocalDate.now(), LocalDate.now().plusDays(15), LocalDate.now().plusDays(10).getDayOfYear()-LocalDate.now().plusDays(5).getDayOfYear(),LeaveStatusEnum.REJECTED, "null", "null", javis);
-			// 		leaveRepository.saveAndFlush(leave1);
-			// 		Leave leave2 = new Leave(LeaveTypeEnum.MEDICAL_LEAVE, LocalDate.now().plusDays(2), LocalDate.now().plusDays(4), 2, LeaveStatusEnum.SUBMITTED, "null", "null", javis);
-			// 		leaveRepository.saveAndFlush(leave2);	
+		// 	Staff subo = staffRepository.save(new Staff(1, 0, "sub", "password", "nottile", "shan", "mon", true, "asdf@gmail.com", 60, 60, 60));
+		// 	Staff javis = staffRepository.save(new Staff(2, 1, "shan", "password", "nottile", "shan", "mon", true, "shanmon2017@gmail.com", 60, 60, 60));
+		// 			Leave leave1 = new Leave(LeaveTypeEnum.MEDICAL_LEAVE, LocalDate.now(), LocalDate.now().plusDays(15), LocalDate.now().plusDays(10).getDayOfYear()-LocalDate.now().plusDays(5).getDayOfYear(),LeaveStatusEnum.REJECTED, "null", "null", javis);
+		// 			leaveRepository.saveAndFlush(leave1);
+		// 			Leave leave2 = new Leave(LeaveTypeEnum.MEDICAL_LEAVE, LocalDate.now().plusDays(2), LocalDate.now().plusDays(4), 2, LeaveStatusEnum.SUBMITTED, "null", "null", javis);
+		// 			leaveRepository.saveAndFlush(leave2);	
 
 		// 			ExtraHour newex= new ExtraHour();
 			
