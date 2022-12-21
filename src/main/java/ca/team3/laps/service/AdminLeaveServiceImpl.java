@@ -27,7 +27,7 @@ public class AdminLeaveServiceImpl implements AdminLeaveService {
     @Override
     public AnnualLeave createAnnualLeaveEntitlement(AnnualLeave annualLeave) throws AdminException {
         String jobTitle = annualLeave.getJobTitle().toLowerCase();
-        if (leaveRepo.findByJobTitle(jobTitle) != null) {
+        if (leaveRepo.findByJobTitleIgnoreCase(jobTitle) != null) {
             throw new AdminException(
                     new ErrorJson(HttpStatus.BAD_REQUEST.value(),
                             "annual leave entitlement for " + jobTitle + " already exists."));
@@ -42,8 +42,8 @@ public class AdminLeaveServiceImpl implements AdminLeaveService {
                     new ErrorJson(HttpStatus.BAD_REQUEST.value(),
                             "granularity and leavedays must be more than zero"));
         }
-        String jobTitle = annualLeave.getJobTitle().toLowerCase();
-        AnnualLeave annualLeaveEntitlement = leaveRepo.findByJobTitle(jobTitle);
+        String jobTitle = annualLeave.getJobTitle();
+        AnnualLeave annualLeaveEntitlement = leaveRepo.findByJobTitleIgnoreCase(jobTitle);
         if (annualLeaveEntitlement == null) {
             throw new AdminException(
                     new ErrorJson(HttpStatus.BAD_REQUEST.value(),
@@ -57,7 +57,7 @@ public class AdminLeaveServiceImpl implements AdminLeaveService {
     @Override
     public void deleteAnnualLeaveEntitlement(AnnualLeave annualLeave) throws AdminException {
         String jobTitle = annualLeave.getJobTitle().toLowerCase();
-        AnnualLeave annualLeaveEntitlement = leaveRepo.findByJobTitle(jobTitle);
+        AnnualLeave annualLeaveEntitlement = leaveRepo.findByJobTitleIgnoreCase(jobTitle);
         if (annualLeaveEntitlement == null) {
             throw new AdminException(
                     new ErrorJson(HttpStatus.BAD_REQUEST.value(),

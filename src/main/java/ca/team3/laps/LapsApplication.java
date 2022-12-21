@@ -1,7 +1,7 @@
 package ca.team3.laps;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -9,13 +9,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import ca.team3.laps.model.ExtraHour;
-import ca.team3.laps.model.Leave;
-import ca.team3.laps.model.LeaveStatusEnum;
-import ca.team3.laps.model.LeaveTypeEnum;
+import ca.team3.laps.model.Admin;
+import ca.team3.laps.model.Role;
 import ca.team3.laps.model.Staff;
+import ca.team3.laps.repository.AdminRepository;
 import ca.team3.laps.repository.ExtraHourRepository;
 import ca.team3.laps.repository.LeaveRepository;
+import ca.team3.laps.repository.RoleRepository;
 import ca.team3.laps.repository.StaffRepo;
 import ca.team3.laps.service.ExtraHourService;
 
@@ -33,14 +33,32 @@ public class LapsApplication {
 	// .build();
 	// }
 
-
-
 	@Autowired
 	StaffRepo staffRepository;
 
+	@Autowired
+	RoleRepository roleRepository;
+
+	@Autowired
+	AdminRepository adminRepository;
+
 	@Bean
-	public CommandLineRunner run(StaffRepo staffRepository, LeaveRepository leaveRepository, ExtraHourService extraHourService, ExtraHourRepository extraHourRepository) {
+	public CommandLineRunner run(StaffRepo staffRepository, LeaveRepository leaveRepository,
+			ExtraHourService extraHourService, ExtraHourRepository extraHourRepository) {
 		return args -> {
+			Staff javis = staffRepository.save(new Staff(1, 0, "Javis", "password", "alrigh", "javis", "john",
+					true, "Javis@gmail.com", 5, 10, 1));
+			Staff john = staffRepository.save(new Staff(2, 1, "Goh", "password", "alrigh", "goh", "john",
+					true, "goh@gmail.com", 5, 10, 1));
+			Role manager = roleRepository.save(new Role("manager"));
+			Role employee = roleRepository.save(new Role("employee"));
+			List<Role> roles = new ArrayList<>();
+			roles.add(manager);
+			javis.setRoles(roles);
+			john.setRoles(roles);
+			staffRepository.saveAndFlush(javis);
+			staffRepository.saveAndFlush(john);
+			adminRepository.saveAndFlush(new Admin("admin", "admin"));
 			// Staff javis = staffRepository.save(new Staff(1, 0, "Javis", "password", 3, "alrigh", "javis", "john",
 			// 		true, "Javis@gmail.com", 5, 10, 1));
 			// staffRepository.save(new Staff(2, 1, "Goh", "password", 3, "alrigh", "goh", "john",

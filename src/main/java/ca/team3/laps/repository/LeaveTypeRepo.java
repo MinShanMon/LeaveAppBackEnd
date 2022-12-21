@@ -14,8 +14,6 @@ import ca.team3.laps.model.LeaveTypes.MedicalLeave;
 
 public interface LeaveTypeRepo extends JpaRepository<LeaveType, Long> {
 
-    @Query("FROM AnnualLeave WHERE jobTitle = :jobTitle")
-    public AnnualLeave findByJobTitle(@Param("jobTitle") String jobTitle);
 
     @Query("FROM AnnualLeave")
     public List<AnnualLeave> findAnnualLeavesEntitlement(); 
@@ -25,4 +23,7 @@ public interface LeaveTypeRepo extends JpaRepository<LeaveType, Long> {
 
     @Query("FROM CompensationLeave")
     public CompensationLeave findCompLeaveEntitlement(); 
+
+    @Query("FROM AnnualLeave")
+    public AnnualLeave findByJobTitleIgnoreCase(String jobTitle);
 }

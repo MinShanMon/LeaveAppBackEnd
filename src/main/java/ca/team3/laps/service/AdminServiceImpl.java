@@ -8,9 +8,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import ca.team3.laps.exception.AdminException;
 import ca.team3.laps.exception.ErrorJson;
+import ca.team3.laps.model.Admin;
 import ca.team3.laps.model.Staff;
 import ca.team3.laps.model.CalendarificAPI.CalendarificAPIResponse;
 import ca.team3.laps.model.CalendarificAPI.Holiday;
+import ca.team3.laps.repository.AdminRepository;
 import ca.team3.laps.repository.CalendarRepo;
 import ca.team3.laps.repository.LeaveTypeRepo;
 import ca.team3.laps.repository.StaffRepo;
@@ -29,10 +31,7 @@ public class AdminServiceImpl implements AdminService {
     CalendarRepo calendarRepo;
 
     @Autowired
-    StaffRepo staffRepo;
-
-    @Autowired
-    LeaveTypeRepo leaveRepo;
+    AdminRepository adminRepository;
 
     @Autowired
     WebClient webClient;
@@ -67,14 +66,15 @@ public class AdminServiceImpl implements AdminService {
         return holidays;
     }
 
-    @Override
-    public Staff createStaff(Staff staff) throws AdminException {
-        if (staffRepo.existsByUsername(staff.getUsername())) {
-            throw new AdminException(
-                    new ErrorJson(HttpStatus.BAD_REQUEST.value(),
-                            "Duplicate username. Please enter a different username"));
+    public boolean authenticate(Admin account) {
+        Admin adminRec = adminRepository.findByUsername(account.getUsername());
+        if (adminRec == null) {
+            return false;
         }
-        return staffRepo.save(staff);
+        if (adminRec.getPassword().equals(account.getPassword())) {
+            return true;
+        }
+        return false;
     }
 
 }

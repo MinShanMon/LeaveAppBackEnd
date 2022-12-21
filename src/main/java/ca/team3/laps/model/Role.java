@@ -33,9 +33,16 @@ public class Role {
 
     private String name;
 
+    public Role(String name) {
+        this.name = name;
+    }
+
     // @JsonIgnore
-    // @ManyToMany(targetEntity = Staff.class, cascade = {CascadeType.ALL, CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    // @JoinTable(name = "staff_role", joinColumns = {@JoinColumn(name = "rold_id", referencedColumnName = "role_id")}, 
-    // inverseJoinColumns = {@JoinColumn(name = "staff_id", referencedColumnName = "staff_id")})
+    // @ManyToMany(targetEntity = Staff.class, cascade = {CascadeType.ALL,
+    // CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    // @JoinTable(name = "staff_role", joinColumns = {@JoinColumn(name = "rold_id",
+    // referencedColumnName = "role_id")},
+    // inverseJoinColumns = {@JoinColumn(name = "staff_id", referencedColumnName =
+    // "staff_id")})
     // private List<Role> roles;
 }
