@@ -68,7 +68,7 @@ public class Staff {
 	@Column(name="medi_requested_entitlement")
 	private int mediLeave;
 
-	@Column(name="comp_requested_entitlement")
+	@Column(name="comp_requested_entitlement", nullable =true)
 	private double compLeave;
 
 	@Column(name = "failed_attempt", nullable = false)

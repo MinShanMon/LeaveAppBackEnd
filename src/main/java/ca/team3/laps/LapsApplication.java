@@ -60,7 +60,6 @@ public class LapsApplication {
 			Admin adminAcct = new Admin("admin", "admin");
 			adminRepository.save(adminAcct);
 			adminService.getHolidays(year);
-
 		};
 	}
 }
