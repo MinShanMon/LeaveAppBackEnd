@@ -55,7 +55,11 @@ public class LapsApplication {
 	public CommandLineRunner run(StaffRepo staffRepository, LeaveRepository leaveRepository,
 			ExtraHourService extraHourService, ExtraHourRepository extraHourRepository) {
 		return args -> {
-			
+
+			String year = Year.now().toString();
+			Admin adminAcct = new Admin("admin", "admin");
+			adminRepository.save(adminAcct);
+			adminService.getHolidays(year);
 		};
 	}
 }

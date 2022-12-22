@@ -15,4 +15,5 @@ public interface AdminStaffService {
     void modifyStaff(Staff staff) throws AdminException;
     void deleteStaff(Staff staff);
     void updateAnLeaveEntitlement(Staff staff);
+    String resetPassword(int id);
 }
