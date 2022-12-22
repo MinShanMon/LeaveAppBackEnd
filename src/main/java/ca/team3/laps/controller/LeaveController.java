@@ -112,14 +112,31 @@ public class LeaveController {
     }
 
     // get all pending
-    @GetMapping("/viewpending")
-    public ResponseEntity<List<Leave>> getPending() {
-        return new ResponseEntity<>(leaveService.viewMulPendingDetails(), HttpStatus.OK);
+    @GetMapping("/viewpending/{id}")
+    public ResponseEntity<List<Leave>> getPending(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(leaveService.viewMulPendingDetails(id), HttpStatus.OK);
     }
 
     // get only one pending
     @GetMapping("/viewdetail/{id}")
     public ResponseEntity<Leave> getDetail(@PathVariable int id) throws LeaveException {
-        return new ResponseEntity<>(leaveService.viewOnePendingDetail(id), HttpStatus.OK);
+        
+        try {
+            return new ResponseEntity<>(leaveService.viewOnePendingDetail(id), HttpStatus.OK);
+        } 
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/getByday/{day}", produces = "application/json")
+    public ResponseEntity getDayLeave(@PathVariable("day") String day) {
+        try {
+            List<Leave> Leaves = new ArrayList<Leave>();
+            Leaves = leaveService.dateLeave(day);
+            return new ResponseEntity<>(Leaves, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

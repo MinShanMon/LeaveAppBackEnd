@@ -35,7 +35,7 @@ public class Staff {
     private int stfId;
 
     @Column(name = "managerid", nullable = true)
-    private int managerId;
+    private String managerId;
 
     
 	@Column(nullable = false, length = 20)
@@ -79,24 +79,20 @@ public class Staff {
 	private List<Leave> staffLeave;
 
 
-    @JsonIgnore
     @ManyToMany(targetEntity = Role.class, cascade = {CascadeType.ALL, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "staff_role", joinColumns = {@JoinColumn(name = "staff_id", referencedColumnName = "staff_id")}, 
     inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "role_id")})
     private List<Role> roles;
 
 
-
     public Staff(){}
     
-    public Staff(int managerId, String username, String password,String title,
+    public Staff(String managerId, String username, String password,String title,
             String firstname, String lastname, boolean status, String email, int anuLeave, int mediLeave,
-            int compLeave) {
-                
+            double compLeave) {
         this.managerId = managerId;
         this.username = username;
         this.password = password;
-        // this.roleId = roleId;
         this.title = title;
         this.firstname = firstname;
         this.lastname = lastname;

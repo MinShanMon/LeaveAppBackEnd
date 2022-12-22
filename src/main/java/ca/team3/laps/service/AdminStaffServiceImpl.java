@@ -1,16 +1,22 @@
 package ca.team3.laps.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import ca.team3.laps.exception.AdminException;
+import ca.team3.laps.exception.ErrorJson;
+import ca.team3.laps.model.Role;
 import ca.team3.laps.model.Staff;
 import ca.team3.laps.model.LeaveTypes.AnnualLeave;
 import ca.team3.laps.model.LeaveTypes.CompensationLeave;
 import ca.team3.laps.model.LeaveTypes.MedicalLeave;
 import ca.team3.laps.repository.LeaveTypeRepo;
+import ca.team3.laps.repository.RoleRepository;
 import ca.team3.laps.repository.StaffRepo;
 
 @Service
@@ -21,6 +27,9 @@ public class AdminStaffServiceImpl implements AdminStaffService {
 
     @Autowired
     LeaveTypeRepo leaveTypeRepo;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     @Override
     public List<Staff> findAllStaff() {
@@ -33,30 +42,73 @@ public class AdminStaffServiceImpl implements AdminStaffService {
     }
 
     @Override
+    public List<Staff> findAllInactiveStaff() {
+        return staffRepo.findByStatusFalse();
+    }
+
+    @Override
+    public List<Staff> findManagers() {
+        List<Staff> staff = findAllActiveStaff();
+        List<Staff> managers = new ArrayList<>();
+        staff.forEach((elem) -> {
+            List<Role> roles = elem.getRoles();
+            roles.forEach((role) -> {
+                if (role.getName().equalsIgnoreCase("manager")) {
+                    managers.add(elem);
+                }
+            });
+        });
+        return managers;
+    }
+
+    @Override
     public Staff findStaffById(int id) {
         return staffRepo.findByStfId(id);
     }
 
     @Override
-    public void createStaff(Staff staff) {
+    public void createStaff(Staff staff) throws AdminException {
+        if (staffRepo.existsByEmail(staff.getEmail())) {
+            throw new AdminException(new ErrorJson(HttpStatus.BAD_REQUEST.value(),
+                    "Email is already used, please enter a different email."));
+        }
         createAccount(staff);
         setLeaveEntitlements(staff);
+        setRolesFromReactForm(staff, staff);
         staffRepo.save(staff);
     }
 
-    // @Override
-    // public void modifyStaff(Staff staff) {
-    //     Staff staffRec = staffRepo.findByStfId(staff.getStfId());
-    //     staffRec.setRoleId(staff.getRoleId());
-    //     staffRec.setAnuLeave(staff.getAnuLeave());
-    //     staffRec.setTitle(staff.getTitle());
-    //     staffRec.setMediLeave(staff.getMediLeave());
-    //     staffRec.setCompLeave(staff.getCompLeave());
-    //     staffRec.setStatus(staff.isStatus());
-    //     staffRec.setEmail(staff.getEmail());
-    //     staffRec.setManagerId(staff.getManagerId());
-    //     staffRepo.save(staffRec);
-    // }
+    @Override
+    public void modifyStaff(Staff staff) throws AdminException {
+        Staff staffRec = staffRepo.findByStfId(staff.getStfId());
+        if (!staffRec.getEmail().equalsIgnoreCase(staff.getEmail())) {
+            if (staffRepo.existsByEmail(staff.getEmail())) {
+                throw new AdminException(new ErrorJson(HttpStatus.BAD_REQUEST.value(),
+                        "Email is already used, please enter a different email."));
+            }
+        }
+        setRolesFromReactForm(staff, staffRec);
+        staffRec.setFirstname(staff.getFirstname());
+        staffRec.setLastname(staff.getLastname());
+        staffRec.setAnuLeave(staff.getAnuLeave());
+        staffRec.setTitle(staff.getTitle());
+        staffRec.setMediLeave(staff.getMediLeave());
+        staffRec.setCompLeave(staff.getCompLeave());
+        staffRec.setStatus(staff.isStatus());
+        staffRec.setEmail(staff.getEmail());
+        staffRec.setManagerId(staff.getManagerId());
+        staffRepo.saveAndFlush(staffRec);
+    }
+
+    private void setRolesFromReactForm(Staff staffForm, Staff staffRec) {
+        List<Role> staffRolesFromForm = staffForm.getRoles();
+        List<Role> staffRolesToSet = new ArrayList<>();
+        staffRolesFromForm.forEach(e -> {
+            Role role = roleRepository.getReferenceById(e.getId());
+            staffRolesToSet.add(role);
+        });
+        staffRec.setRoles(staffRolesToSet);
+    }
 
     @Override
     public void deleteStaff(Staff staff) {
@@ -83,12 +135,12 @@ public class AdminStaffServiceImpl implements AdminStaffService {
         String firstName = staff.getFirstname();
         String lastName = staff.getLastname();
         if (firstName == null || firstName.isEmpty()) {
-            return lastName + countUsernameContaining(lastName);
+            return lastName.toLowerCase() + countUsernameContaining(lastName);
         } else if (lastName == null || lastName.isEmpty()) {
-            return firstName + countUsernameContaining(firstName);
+            return firstName.toLowerCase() + countUsernameContaining(firstName);
         } else {
             String username = firstName + "." + lastName;
-            return username + countUsernameContaining(username);
+            return username.toLowerCase() + countUsernameContaining(username);
         }
     }
 
@@ -97,7 +149,7 @@ public class AdminStaffServiceImpl implements AdminStaffService {
         if (count == 0) {
             return "";
         }
-        return Integer.toString(count);
+        return Integer.toString(count + 1);
     }
 
     private String generatePassword() {
@@ -110,7 +162,7 @@ public class AdminStaffServiceImpl implements AdminStaffService {
     }
 
     private void setLeaveEntitlements(Staff staff) {
-        AnnualLeave annualLeave = leaveTypeRepo.findByJobTitle(staff.getTitle());
+        AnnualLeave annualLeave = leaveTypeRepo.findByJobTitleIgnoreCase(staff.getTitle());
         if (annualLeave == null) {
             staff.setAnuLeave(0);
         } else {

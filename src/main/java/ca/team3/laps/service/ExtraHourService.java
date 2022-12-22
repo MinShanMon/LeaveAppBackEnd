@@ -21,6 +21,8 @@ public interface ExtraHourService {
 
     ExtraHour rejecExtraHour(Integer id) throws LeaveException;
 
+    public ExtraHour findExtWithExtid(Integer extid);
+
     static ResponseEntity createExtra(ExtraHour extraHour) {
         return null;
     }

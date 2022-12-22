@@ -34,6 +34,15 @@ public class ExtraHourController {
         }
     }
 
+    @GetMapping("/extra/getwithextid/{id}")
+    public ResponseEntity findExtwithExtid(@PathVariable("id") Integer id){
+        try{
+            return new ResponseEntity<>(extraHourService.findExtWithExtid(id), HttpStatus.OK);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // creating extrahour form
     @PostMapping("/extra/post")
     public ResponseEntity createExtra(@RequestBody ExtraHour extraHour) {
