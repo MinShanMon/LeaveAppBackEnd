@@ -24,6 +24,6 @@ public interface LeaveTypeRepo extends JpaRepository<LeaveType, Long> {
     @Query("FROM CompensationLeave")
     public CompensationLeave findCompLeaveEntitlement(); 
 
-    @Query("FROM AnnualLeave")
-    public AnnualLeave findByJobTitleIgnoreCase(String jobTitle);
+    @Query("FROM AnnualLeave WHERE UPPER(jobTitle) = UPPER(:jobTitle) ")
+    public AnnualLeave findByJobTitle(@Param("jobTitle") String jobTitle);
 }

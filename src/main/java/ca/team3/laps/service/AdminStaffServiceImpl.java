@@ -177,7 +177,7 @@ public class AdminStaffServiceImpl implements AdminStaffService {
     }
 
     private void setLeaveEntitlements(Staff staff) {
-        AnnualLeave annualLeave = leaveTypeRepo.findByJobTitleIgnoreCase(staff.getTitle());
+        AnnualLeave annualLeave = leaveTypeRepo.findByJobTitle(staff.getTitle().toLowerCase());
         if (annualLeave == null) {
             staff.setAnuLeave(0);
         } else {
