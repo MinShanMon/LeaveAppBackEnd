@@ -79,6 +79,7 @@ public class LapsApplication {
 			
         staffRepository.saveAndFlush(new Staff(2,"ivan", "$2a$10$0tflhmIWu/J75HJXolQk.ebtp7E3Cnk/Q2GidFnF2Yz2wqgprigku", "Admin", "Ivan Tse Khiang ", "Eng", 
 		true, "Ivan_Eng@gmail.com", 14, 14, 0));
+
 	
 
 		Leave leave1 = new Leave(LeaveTypeEnum.ANNUAL_LEAVE, LocalDate.now(), LocalDate.now().plusDays(10), 10,LeaveStatusEnum.SUBMITTED, "null", "null", Lynn);
