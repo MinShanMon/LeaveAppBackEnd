@@ -6,6 +6,7 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ca.team3.laps.exception.AdminException;
@@ -127,7 +128,7 @@ public class AdminStaffServiceImpl implements AdminStaffService {
     // Utils
     private void createAccount(Staff staff) {
         staff.setUsername(generateUsername(staff));
-        staff.setPassword(generatePassword());
+        staff.setPassword(encodePassword(generatePassword()));
         staff.setStatus(true);
     }
 
@@ -152,12 +153,26 @@ public class AdminStaffServiceImpl implements AdminStaffService {
         return Integer.toString(count + 1);
     }
 
-    private String generatePassword() {
+    private char[] generatePassword() {
         Random rnd = new Random();
         char[] password = new char[8];
         for (int i = 0; i < password.length; i++) {
             password[i] = (char) (rnd.nextInt(90) + 33);
         }
+        return password;
+    }
+
+    public String encodePassword(char[] password) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.encode(String.copyValueOf(password));
+    }
+
+    public String resetPassword(int id) {
+        Staff staff = findStaffById(id);
+        char[] password = generatePassword();
+        String encodedPass = encodePassword(password);
+        staff.setPassword(encodedPass);
+        staffRepo.save(staff);
         return String.copyValueOf(password);
     }
 
