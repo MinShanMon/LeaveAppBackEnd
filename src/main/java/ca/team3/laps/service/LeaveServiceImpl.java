@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -297,6 +299,15 @@ public class LeaveServiceImpl implements LeaveService {
         }else{
             throw new LeaveException("Record not found!");
         }
+    }
+
+    @Override
+    public List<Leave> dateLeave(String day){
+        // StringBuffer day1 = new StringBuffer(day);
+        // day1.insert(4,"-");
+        // day1.insert(7,"-");
+        LocalDate parseLocalDate = LocalDate.parse(day, DateTimeFormatter.ofPattern("yyyyMMdd"));
+        return leaveRepository.findByday(parseLocalDate); //leaveRepository.findByday();
     }
 }
 

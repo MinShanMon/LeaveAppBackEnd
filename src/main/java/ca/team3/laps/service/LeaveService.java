@@ -33,5 +33,5 @@ public interface LeaveService {
 
     Leave viewOnePendingDetail(int id) throws LeaveException;
 
-    
+    public List<Leave> dateLeave(String day);
 }
