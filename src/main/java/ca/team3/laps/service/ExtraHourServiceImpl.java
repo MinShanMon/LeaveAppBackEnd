@@ -30,6 +30,11 @@ public class ExtraHourServiceImpl implements ExtraHourService{
     }
 
     @Override
+    public ExtraHour findExtWithExtid(Integer extid){
+        return extraHourRepository.findById(extid).orElse(null);
+    }
+    
+    @Override
     public ExtraHour createExtraHour(ExtraHour extraHour) {
         ExtraHour newex= new ExtraHour();
         newex.setStaff_id(extraHour.getStaff_id());

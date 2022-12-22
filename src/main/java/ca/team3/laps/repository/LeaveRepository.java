@@ -1,4 +1,5 @@
 package ca.team3.laps.repository;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,4 +13,6 @@ public interface LeaveRepository extends JpaRepository<Leave, Integer>{
     public List<Leave> findByStaffid(@Param("staffid") Integer staffid);
     @Query("SELECT l FROM Leave l WHERE l.id =:id")
     Leave getDetail(@Param("id") int id);
+    @Query("SELECT l FROM Leave l WHERE l.endDate >= :day and l.startDate <= :day")
+    public List<Leave> findByday(@Param("day") LocalDate day);
 }

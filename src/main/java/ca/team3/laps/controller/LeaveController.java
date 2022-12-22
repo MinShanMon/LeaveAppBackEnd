@@ -128,4 +128,15 @@ public class LeaveController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping(value = "/getByday/{day}", produces = "application/json")
+    public ResponseEntity getDayLeave(@PathVariable("day") String day) {
+        try {
+            List<Leave> Leaves = new ArrayList<Leave>();
+            Leaves = leaveService.dateLeave(day);
+            return new ResponseEntity<>(Leaves, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
