@@ -55,8 +55,7 @@ public class LapsApplication {
 	public CommandLineRunner run(StaffRepo staffRepository, LeaveRepository leaveRepository,
 			ExtraHourService extraHourService, ExtraHourRepository extraHourRepository) {
 		return args -> {
-
-
+			
 		};
 	}
 }

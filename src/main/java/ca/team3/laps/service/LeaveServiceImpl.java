@@ -44,9 +44,19 @@ public class LeaveServiceImpl implements LeaveService {
     public Leave updateLeaveHistory(Integer id, Leave leaves) throws ca.team3.laps.exception.LeaveException{
         // TODO Auto-generated method stub
         Leave leave = leaveRepository.findById(id).get();
+
         if(leave.getStatus() != LeaveStatusEnum.SUBMITTED && leave.getStatus() != LeaveStatusEnum.UPDATED){
             throw new LeaveException("status cannot update, it is already '"+ leave.getStatus()+".'");
         }
+
+        List<Holiday> hdates = calendarRepo.findAll();
+
+        for(Holiday h: hdates){
+            if(h.getDate().toEpochDay() == leaves.getStartDate().toEpochDay()|| h.getDate().toEpochDay() == leaves.getEndDate().toEpochDay()){
+                throw new LeaveException("Start Date and End Date Cannot be public holiday!!");
+            }
+        }
+
         Staff staff = leave.getLeave();
         if(leaves.isHalfday()){
             if(leaves.getPeriod()>staff.getCompLeave()){
@@ -64,6 +74,18 @@ public class LeaveServiceImpl implements LeaveService {
             return leave;
 
         }
+
+        if(leaves.getEndDate().toEpochDay()-leaves.getStartDate().toEpochDay() > 14){
+            leave.setStartDate(leaves.getStartDate());
+            leave.setEndDate(leaves.getEndDate());            
+            leave.setReason(leaves.getReason());            
+            leave.setType(leaves.getType());
+            leave.setWork(leaves.getWork());
+            leave.setStatus(LeaveStatusEnum.UPDATED);
+            leaveRepository.save(leave);
+            return leave;
+        }
+
         leave.setStartDate(leaves.getStartDate());
         leave.setEndDate(leaves.getEndDate());
 
@@ -141,6 +163,14 @@ public class LeaveServiceImpl implements LeaveService {
     public Leave createLeaveHistory(Integer stfid, Leave leaves) throws LeaveException{
         Staff staff = staffRepo.findById(stfid).get();
         Leave leaveHistory = new Leave();
+        List<Holiday> hdates = calendarRepo.findAll();
+
+        for(Holiday h: hdates){
+            if(h.getDate().toEpochDay() == leaves.getStartDate().toEpochDay()|| h.getDate().toEpochDay() == leaves.getEndDate().toEpochDay()){
+                throw new LeaveException("Start Date and End Date Cannot be public holiday!!");
+            }
+        }
+        
         if(leaves.isHalfday()){
             if(leaves.getPeriod()>staff.getCompLeave()){
                 throw new LeaveException("Check Start Date and End Date and period, You only left "+ staff.getCompLeave()+". You are trying to enter " + leaves.getPeriod()+" days");
@@ -157,6 +187,19 @@ public class LeaveServiceImpl implements LeaveService {
             leaveRepository.save(leaveHistory);
             return leaveHistory;
 
+        }
+
+        if(leaves.getEndDate().toEpochDay()-leaves.getStartDate().toEpochDay() > 14){
+            leaveHistory.setHalfday(leaves.isHalfday());
+            leaveHistory.setStartDate(leaves.getStartDate());
+            leaveHistory.setEndDate(leaves.getEndDate());
+            leaveHistory.setLeave(staff);
+            leaveHistory.setReason("null");            
+            leaveHistory.setType(leaves.getType());
+            leaveHistory.setWork(leaves.getWork());
+            leaveHistory.setStatus(LeaveStatusEnum.SUBMITTED);
+            leaveRepository.save(leaveHistory);
+            return leaveHistory;
         }
         leaveHistory.setStartDate(leaves.getStartDate());
         leaveHistory.setEndDate(leaves.getEndDate());
@@ -221,6 +264,15 @@ public class LeaveServiceImpl implements LeaveService {
         Staff staff = leaves.getLeave();
         if(leaves.getStatus() != LeaveStatusEnum.SUBMITTED && leaves.getStatus() != LeaveStatusEnum.UPDATED ){
             throw new LeaveException("it is already "+ leaves.getStatus()+". ");
+        }
+
+        
+        List<Holiday> hdates = calendarRepo.findAll();
+
+        for(Holiday h: hdates){
+            if(h.getDate().toEpochDay() == leaves.getStartDate().toEpochDay()|| h.getDate().toEpochDay() == leaves.getEndDate().toEpochDay()){
+                throw new LeaveException("Start Date and End Date Cannot be public holiday!!");
+            }
         }
         leaves.setStatus(leave.getStatus());
         if(leave.getStatus() == LeaveStatusEnum.APPROVED){
