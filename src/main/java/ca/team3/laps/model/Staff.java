@@ -89,10 +89,10 @@ public class Staff {
 
     public Staff(){}
     
-    public Staff(int stfId, int managerId, String username, String password,String title,
+    public Staff(int managerId, String username, String password,String title,
             String firstname, String lastname, boolean status, String email, int anuLeave, int mediLeave,
             int compLeave) {
-        this.stfId = stfId;
+                
         this.managerId = managerId;
         this.username = username;
         this.password = password;
