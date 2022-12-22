@@ -49,13 +49,13 @@ public class LeaveServiceImpl implements LeaveService {
             throw new LeaveException("status cannot update, it is already '"+ leave.getStatus()+".'");
         }
 
-        List<Holiday> hdates = calendarRepo.findAll();
+        // List<Holiday> hdates = calendarRepo.findAll();
 
-        for(Holiday h: hdates){
-            if(h.getDate().toEpochDay() == leaves.getStartDate().toEpochDay()|| h.getDate().toEpochDay() == leaves.getEndDate().toEpochDay()){
-                throw new LeaveException("Start Date and End Date Cannot be public holiday!!");
-            }
-        }
+        // for(Holiday h: hdates){
+        //     if(h.getDate().toEpochDay() == leaves.getStartDate().toEpochDay()|| h.getDate().toEpochDay() == leaves.getEndDate().toEpochDay()){
+        //         throw new LeaveException("Start Date and End Date Cannot be public holiday!!");
+        //     }
+        // }
 
         Staff staff = leave.getLeave();
         if(leaves.isHalfday()){
