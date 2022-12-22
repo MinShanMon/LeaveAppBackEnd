@@ -1,6 +1,7 @@
 package ca.team3.laps.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,6 +99,13 @@ public class ExtraHourServiceImpl implements ExtraHourService{
         ext.setStatus(LeaveStatusEnum.REJECTED);
         extraHourRepository.saveAndFlush(ext);
         return ext;
+    }
+
+    @Override
+    public List<ExtraHour> viewMulPendingDetails(Integer id) {
+        List<ExtraHour> leaves = suboExtraHour(id);
+        leaves = leaves.stream().filter(u -> u.getStatus().equals(LeaveStatusEnum.SUBMITTED)).collect(Collectors.toList());
+        return leaves; 
     }
 
     

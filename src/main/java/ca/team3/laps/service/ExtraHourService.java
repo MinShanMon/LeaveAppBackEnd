@@ -23,7 +23,6 @@ public interface ExtraHourService {
 
     public ExtraHour findExtWithExtid(Integer extid);
 
-    static ResponseEntity createExtra(ExtraHour extraHour) {
-        return null;
-    }
+
+    public List<ExtraHour> viewMulPendingDetails(Integer id);
 }
