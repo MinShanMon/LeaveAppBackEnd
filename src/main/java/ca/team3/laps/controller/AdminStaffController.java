@@ -49,6 +49,12 @@ public class AdminStaffController {
         return ResponseEntity.status(HttpStatus.OK).body(staff);
     }
 
+    @GetMapping("/password/{id}")
+    public ResponseEntity findStaffPassword(@PathVariable int id) {
+        Staff staff = adminStaffService.findStaffById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(staff.getPassword());
+    }
+
     @PostMapping("/staff")
     public ResponseEntity createStaff(@RequestBody Staff staff) {
         try {
