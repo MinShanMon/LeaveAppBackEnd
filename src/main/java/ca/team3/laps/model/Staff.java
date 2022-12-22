@@ -35,7 +35,7 @@ public class Staff {
     private int stfId;
 
     @Column(name = "managerid", nullable = true)
-    private String managerId;
+    private int managerId;
 
     
 	@Column(nullable = false, length = 20)
@@ -87,7 +87,7 @@ public class Staff {
 
     public Staff(){}
     
-    public Staff(String managerId, String username, String password,String title,
+    public Staff(int managerId, String username, String password,String title,
             String firstname, String lastname, boolean status, String email, int anuLeave, int mediLeave,
             double compLeave) {
         this.managerId = managerId;
