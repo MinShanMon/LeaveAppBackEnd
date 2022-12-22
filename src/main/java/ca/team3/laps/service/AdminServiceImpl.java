@@ -99,7 +99,7 @@ public class AdminServiceImpl implements AdminService {
             if (!holidayDates.contains(saturdayRec.getDate())) {
                 weekends.add(saturdayRec);
             }
-            if (!holidayDates.contains(sundayRec.getDate())) {
+            if (!holidayDates.contains(sundayRec.getDate()) && sundayRec.getDate().getYear() == year) {
                 weekends.add(sundayRec);
             }
         } while (saturday.getYear() == year);
