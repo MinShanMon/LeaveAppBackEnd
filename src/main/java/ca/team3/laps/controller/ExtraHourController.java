@@ -1,5 +1,7 @@
 package ca.team3.laps.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +45,7 @@ public class ExtraHourController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
     // creating extrahour form
     @PostMapping("/extra/post")
     public ResponseEntity createExtra(@RequestBody ExtraHour extraHour) {
@@ -105,6 +108,11 @@ public class ExtraHourController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/extra/viewpending/{id}")
+    public ResponseEntity<List<ExtraHour>> getPending(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(extraHourService.viewMulPendingDetails(id), HttpStatus.OK);
     }
 
 }
