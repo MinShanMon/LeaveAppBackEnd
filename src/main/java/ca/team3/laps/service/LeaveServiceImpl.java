@@ -48,14 +48,13 @@ public class LeaveServiceImpl implements LeaveService {
         if(leave.getStatus() != LeaveStatusEnum.SUBMITTED && leave.getStatus() != LeaveStatusEnum.UPDATED){
             throw new LeaveException("status cannot update, it is already '"+ leave.getStatus()+".'");
         }
+        List<Holiday> hdates = calendarRepo.findAll();
 
-        // List<Holiday> hdates = calendarRepo.findAll();
-
-        // for(Holiday h: hdates){
-        //     if(h.getDate().toEpochDay() == leaves.getStartDate().toEpochDay()|| h.getDate().toEpochDay() == leaves.getEndDate().toEpochDay()){
-        //         throw new LeaveException("Start Date and End Date Cannot be public holiday!!");
-        //     }
-        // }
+        for(Holiday h: hdates){
+            if(h.getDate().toEpochDay() == leaves.getStartDate().toEpochDay()|| h.getDate().toEpochDay() == leaves.getEndDate().toEpochDay()){
+                throw new LeaveException("Start Date and End Date Cannot be public holiday!!");
+            }
+        }
 
         Staff staff = leave.getLeave();
         if(leaves.isHalfday()){
@@ -76,10 +75,29 @@ public class LeaveServiceImpl implements LeaveService {
         }
 
         if(leaves.getEndDate().toEpochDay()-leaves.getStartDate().toEpochDay() > 14){
+            
+            if(leaves.getType() == LeaveTypeEnum.COMPENSATION_LEAVE){
+                if(leaves.getPeriod()>staff.getCompLeave()){
+                    throw new LeaveException("Check Start Date and End Date and period, You only left "+ staff.getCompLeave()+". You are trying to enter " + leaves.getPeriod()+" days");
+                }                           
+            }
+
+            if(leaves.getType() == LeaveTypeEnum.ANNUAL_LEAVE){
+                if(leaves.getPeriod()>staff.getAnuLeave()){
+                    throw new LeaveException("Check Start Date and End Date and period, You only left "+ staff.getAnuLeave()+". You are trying to enter " + leaves.getPeriod()+" days");
+                }                           
+            }
+            
+            if(leaves.getType() == LeaveTypeEnum.MEDICAL_LEAVE){
+                if(leaves.getPeriod()>staff.getMediLeave()){
+                    throw new LeaveException("Check Start Date and End Date and period, You only left "+ staff.getMediLeave()+". You are trying to enter " + leaves.getPeriod()+" days");
+                }                           
+            }
             leave.setStartDate(leaves.getStartDate());
             leave.setEndDate(leaves.getEndDate());            
             leave.setReason(leaves.getReason());            
             leave.setType(leaves.getType());
+            leave.setPeriod(leaves.getPeriod());
             leave.setWork(leaves.getWork());
             leave.setStatus(LeaveStatusEnum.UPDATED);
             leaveRepository.save(leave);
@@ -175,6 +193,7 @@ public class LeaveServiceImpl implements LeaveService {
             if(leaves.getPeriod()>staff.getCompLeave()){
                 throw new LeaveException("Check Start Date and End Date and period, You only left "+ staff.getCompLeave()+". You are trying to enter " + leaves.getPeriod()+" days");
             }  
+
             leaveHistory.setHalfday(leaves.isHalfday());
             leaveHistory.setStartDate(LocalDate.now());
             leaveHistory.setEndDate(LocalDate.now().plusDays(1));
@@ -190,10 +209,29 @@ public class LeaveServiceImpl implements LeaveService {
         }
 
         if(leaves.getEndDate().toEpochDay()-leaves.getStartDate().toEpochDay() > 14){
+            if(leaves.getType() == LeaveTypeEnum.COMPENSATION_LEAVE){
+                if(leaves.getPeriod()>staff.getCompLeave()){
+                    throw new LeaveException("Check Start Date and End Date and period, You only left "+ staff.getCompLeave()+". You are trying to enter " + leaves.getPeriod()+" days");
+                }                           
+            }
+
+            if(leaves.getType() == LeaveTypeEnum.ANNUAL_LEAVE){
+                if(leaves.getPeriod()>staff.getAnuLeave()){
+                    throw new LeaveException("Check Start Date and End Date and period, You only left "+ staff.getAnuLeave()+". You are trying to enter " + leaves.getPeriod()+" days");
+                }                           
+            }
+            
+            if(leaves.getType() == LeaveTypeEnum.MEDICAL_LEAVE){
+                if(leaves.getPeriod()>staff.getMediLeave()){
+                    throw new LeaveException("Check Start Date and End Date and period, You only left "+ staff.getMediLeave()+". You are trying to enter " + leaves.getPeriod()+" days");
+                }                           
+            }
+
             leaveHistory.setHalfday(leaves.isHalfday());
             leaveHistory.setStartDate(leaves.getStartDate());
             leaveHistory.setEndDate(leaves.getEndDate());
             leaveHistory.setLeave(staff);
+            leaveHistory.setPeriod(leaves.getPeriod());
             leaveHistory.setReason("null");            
             leaveHistory.setType(leaves.getType());
             leaveHistory.setWork(leaves.getWork());
@@ -284,6 +322,7 @@ public class LeaveServiceImpl implements LeaveService {
                 staff.setAnuLeave(i);
                 staffRepo.saveAndFlush(staff);
                 leaveRepository.saveAndFlush(leaves);
+                leaves.setReason(leave.getReason());
                 return leaves;
             }
 
@@ -294,6 +333,7 @@ public class LeaveServiceImpl implements LeaveService {
                     staff.setMediLeave(i);
                     staffRepo.saveAndFlush(staff);
                     leaveRepository.saveAndFlush(leaves);
+                    leaves.setReason(leave.getReason());
                     return leaves;
             }
 
@@ -303,9 +343,11 @@ public class LeaveServiceImpl implements LeaveService {
                     staff.setCompLeave(i);
                     staffRepo.saveAndFlush(staff);
                     leaveRepository.saveAndFlush(leaves);
+                    leaves.setReason(leave.getReason());
                     return leaves;
             }
         }
+        leaves.setReason(leave.getReason());
         leaveRepository.saveAndFlush(leaves);
         return leaves;
     }
